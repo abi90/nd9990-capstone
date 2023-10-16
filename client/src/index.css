@@ -1,0 +1,31 @@
+.App {
+    font-family: sans-serif;
+}
+
+.display-flex {
+    display: flex;
+}
+
+.flex-grow {
+    flex-grow: 1;
+}
+
+.ui.top.right.pointing.dropdown > .menu {
+    margin: 0 !important;
+}
+
+.center { 
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.mts {
+    margin-top: 32px;
+}
+
+.flex-column {
+    flex-flow: column wrap;
+    flex-direction: column;
+    flex-wrap: wrap;
+}

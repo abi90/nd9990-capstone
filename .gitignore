@@ -1,0 +1,10 @@
+client/node_modules
+backend/node_modules
+
+client/build
+backend/build
+
+.DS_Store
+*.pem
+.serverless/
+.serverless_nextjs/
