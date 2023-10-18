@@ -8,6 +8,7 @@ import { LogIn } from './components/LogIn'
 import { NotFound } from './components/NotFound'
 import { Notes } from './components/Notes'
 import { CreateNote } from './components/CreateNote'
+import { AttachmentManager } from './components/AttachmentManager'
 
 export interface AppProps {}
 
@@ -110,6 +111,14 @@ export default class App extends Component<AppProps, AppState> {
                     exact
                     render={props => {
                         return <CreateNote {...props} auth={this.props.auth} />
+                    }}
+                />
+
+                <Route
+                    path="/notes/:noteId/attachment"
+                    exact
+                    render={props => {
+                        return <AttachmentManager {...props} auth={this.props.auth} />
                     }}
                 />
 

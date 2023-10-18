@@ -91,4 +91,16 @@ export class NotesAccess {
         return result.Item as NoteItem
     }
 
+    async updateTodoWithAttachmentUrl(noteId: string, attachmentUrl: string) {
+        logger.info('updateTodoWithAttachmentUrl start')
+        await this.docClient.update({
+            TableName: this.NotesTable,
+            Key: { noteId },
+            UpdateExpression: 'set attachmentUrl = :attachmentUrl',
+            ExpressionAttributeValues: {
+                ':attachmentUrl': attachmentUrl
+            }
+        }) .promise()
+    }
+
 }

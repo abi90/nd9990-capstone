@@ -2,6 +2,7 @@ export interface NoteItem {
   userId: string
   noteId: string
   createdAt: string
-  title: string,
+  title: string
   content: string
+  attachmentUrl?: string
 }

@@ -6,9 +6,11 @@ import { createLogger } from '../utils/logger'
 import * as uuid from 'uuid'
 import * as createError from 'http-errors'
 import { NoteUpdate } from '../models/NoteUpdate'
+import { AttachmentUtils } from '../helpers/attachmentUtils'
 
-const NoteAccess = new NotesAccess()
+const noteAccess = new NotesAccess()
 const logger = createLogger('Notes')
+const attachmentUtils = new AttachmentUtils()
 
 export const createNote = async (request: CreateNoteRequest, userId: string ): Promise<NoteItem> => {
     try {
@@ -21,7 +23,7 @@ export const createNote = async (request: CreateNoteRequest, userId: string ): P
             ...request
         } as NoteItem
 
-        await NoteAccess.createNote(item)
+        await noteAccess.createNote(item)
         return item
     } catch (e) {
         logger.log('error', e)
@@ -32,7 +34,7 @@ export const createNote = async (request: CreateNoteRequest, userId: string ): P
 export const getAllNotesFor = async (userId: string): Promise<NoteItem[]> => {
     try {
         logger.info('get all Notes for user')
-        return await NoteAccess.getNotesFor(userId)
+        return await noteAccess.getNotesFor(userId)
     } catch (e) {
         logger.info(e)
         logger.log('error', e)
@@ -48,7 +50,7 @@ export const getNote = async (userId: string, noteId: string): Promise<NoteItem 
             return new createError.Forbidden()
         }
         
-        return await NoteAccess.getNote(noteId)
+        return await noteAccess.getNote(noteId)
     } catch (e) {
         logger.log('error', e)
         throw e
@@ -64,7 +66,7 @@ export const updateNote = async (request: UpdateNoteRequest, noteId: string, use
         }
 
         const item = { ...request } as NoteUpdate
-        await NoteAccess.updateNote(noteId, item)
+        await noteAccess.updateNote(noteId, item)
         
         return item
     } catch (e) {
@@ -81,7 +83,7 @@ export const deleteNote = async (userId: string, noteId: string): Promise<string
             return new createError.Forbidden()
         }
         
-        await NoteAccess.deleteNote(noteId)
+        await noteAccess.deleteNote(noteId)
         return noteId
     } catch (e) {
         logger.log('error', e)
@@ -89,7 +91,32 @@ export const deleteNote = async (userId: string, noteId: string): Promise<string
     }
 }
 
+export const createAttachmentPresignedUrl = async (attachmentId: string): Promise<string | createError.HttpError> => {
+    try {
+        logger.info('creating attachment presigned url')
+        return attachmentUtils.getSignedUrl(attachmentId)
+    } catch (e) {
+        logger.log('error', e)
+        throw e
+    }
+}
+
+export const updateTodoWithAttachmentUrl = async (userId: string, noteId: string, attachmentId: string): Promise<string | createError.HttpError> => {
+    try {
+        logger.info('updating note with attachment url')
+
+        if (await isOwner(userId, noteId)) {
+            return new createError.Forbidden()
+        }
+        const attachmentUrl = attachmentUtils.getAttachmentUrl(attachmentId)
+        await noteAccess.updateTodoWithAttachmentUrl(noteId, attachmentUrl)
+    } catch (e) {
+        logger.log('error', e)
+        throw e
+    }
+}
+
 const isOwner = async (userId: string, noteId: string): Promise<boolean> => {
-    const item = await NoteAccess.getNote(noteId)
+    const item = await noteAccess.getNote(noteId)
     return userId !== item.userId
 }

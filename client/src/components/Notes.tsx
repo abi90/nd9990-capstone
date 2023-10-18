@@ -42,6 +42,10 @@ export class Notes extends React.PureComponent<NotesProps, NotesState> {
         this.props.history.push(`/notes/${noteId}/edit`)
     }
 
+    onAttachmentClick = (noteId: string) => {
+        this.props.history.push(`/notes/${noteId}/attachment`)
+    }
+
     onCreateClick = () => { this.props.history.push('/notes/new') }
 
     onNoteCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
@@ -131,7 +135,9 @@ export class Notes extends React.PureComponent<NotesProps, NotesState> {
                             <Preview 
                                 title={note.title} 
                                 document={note.content}
+                                attachmentUrl={note.attachmentUrl}
                                 onEditClick={() => this.onEditButtonClick(note.noteId)}
+                                onAttachmentClick={() => this.onAttachmentClick(note.noteId)}
                                 onDeleteClick={() => this.onNoteDelete(note.noteId)}
                             />
                         </Grid.Column>
